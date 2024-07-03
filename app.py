@@ -24,7 +24,7 @@ text_field = "text"
 vectorstore = PineconeVector(index=index, embedding=embeddings.embed_query, text_key=text_field)
 
 # Set up OpenAI API key
-os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
+# os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 
 # Set up chat model
 # chat = ChatOpenAI(openai_api_key=os.environ["OPENAI_API_KEY"], model='gpt-3.5-turbo')
