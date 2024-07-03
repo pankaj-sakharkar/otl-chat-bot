@@ -13,8 +13,10 @@ load_dotenv()
 app = Flask(__name__)
 
 # Set up API keys
-PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+# PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
+# OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+PINECONE_API_KEY = "b28dc8f0-3cfa-482c-8897-ca9a84cca8ac"
+OPENAI_API_KEY =  "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"
 
 
 # Initialize Pinecone and embeddings
@@ -28,7 +30,8 @@ vectorstore = PineconeVector(index=index, embedding=embeddings.embed_query, text
 os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 
 # Set up chat model
-chat = ChatOpenAI(openai_api_key=os.environ["OPENAI_API_KEY"], model='gpt-3.5-turbo')
+# chat = ChatOpenAI(openai_api_key=os.environ["OPENAI_API_KEY"], model='gpt-3.5-turbo')
+chat = ChatOpenAI(openai_api_key=OPENAI_API_KEY, model='gpt-3.5-turbo')
 
 # Define the augment prompt function
 def augment_prompt(query: str):
