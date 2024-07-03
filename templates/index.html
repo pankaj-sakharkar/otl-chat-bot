@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR ChatBot</title>
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet" />
+    <link rel="icon" href="{{ url_for('static', filename='img/Onward_Logoicon.ico') }}" type="image/x-icon" />
+    <script src="{{ url_for('static', filename='js/jquery-1.12.4.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <link href="{{ url_for('static', filename='css/chat.css') }}" rel="stylesheet" type="text/css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url("{{ url_for('static', filename='img/bg.png') }}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 500px;
+            height: 100%;
+            max-height: 650px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background-color: #0094bc;
+            color: #fff;
+            padding: 8px;
+            text-align: center;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-container img {
+            max-height: 40px;
+            max-width: 100%;
+        }
+
+        .chat-header h1 {
+            margin: 0;
+            padding: 0;
+            text-align: left;
+        }
+
+        .chat-body {
+            padding: 15px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .chat-footer {
+            display: flex;
+            padding: 10px;
+            background: #9ae6e4;
+            align-items: center;
+            position: relative;
+        }
+
+        .chat-footer input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #35a3a0;
+            border-radius: 4px;
+            font-size: 1em;
+            width: 70%;
+            box-sizing: border-box;
+        }
+
+        .chat-footer button {
+            padding: 10px 15px;
+            background-color: #0094bc;
+            border: none;
+            border-radius: 55px;
+            color: #fff;
+            font-size: 1em;
+            cursor: pointer;
+            margin-left: 10px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+        }
+
+        .chat-footer button:hover {
+            background-color: #065c74;
+            box-shadow: 0 6px 8px rgba(0, 123, 255, 0.15);
+        }
+
+        .chat-footer button:disabled {
+            background-color: #80c8d6;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .chat-message {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .chat-message.user {
+            flex-direction: row-reverse;
+        }
+
+        .chat-message.user .message {
+            background-color: #f5e2ad;
+            color: #141414;
+        }
+
+        .chat-message.bot .message {
+            background-color: #baf1c8;
+            color: #000;
+        }
+
+        .message {
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 83%;
+            margin: 0 2px;
+        }
+
+        .avatar {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+        }
+
+        .loading-icon {
+            border: 4px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 4px solid #0094bc;
+            width: 20px;
+            height: 20px;
+            animation: spin 2s linear infinite;
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+    <script>
+        function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const inputField = document.querySelector('input[name="prompt_input"]');
+            const promptInput = inputField.value.trim(); 
+
+            if (promptInput === "" || promptInput.length <= 1) {
+                inputField.value="";
+                return;  
+            }
+
+            const submitButton = document.querySelector('.chat-footer button');
+            const loadingIcon = document.querySelector('.loading-icon');
+            submitButton.disabled = true;
+            loadingIcon.style.display = 'block';
+            event.target.submit();
+        }
+
+        function scrollToBottom() {
+            const chatBody = document.querySelector('.chat-body');
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            scrollToBottom();
+        });
+
+        document.querySelector('form').addEventListener('submit', function() {
+            setTimeout(scrollToBottom, 100); 
+        });
+    </script>
+</head>
+
+<body>
+    <div class="chat-container" style="z-index: 1;">
+        <div class="chat-header">
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='img/logo1.svg') }}" alt="HR Logo">
+            </div>
+            <div>
+                <img src="{{ url_for('static', filename='img/chatBot.png') }}" alt="HRBuddy"> <b>
+                <label style="font-size:14px;">OTL GenAI Buddy</label>
+                <label style="font-size:9px;">V1</label></b>
+            </div>
+        </div>
+        <div class="chat-body">
+            {% for message in chat_history %}
+            {% if message.startswith('user:') %}
+            <div class="chat-message user">
+                <img class="avatar avatar-xs" src="{{ url_for('static', filename='img/administrator-male.png') }}"
+                    alt="User Avatar">
+                <div class="message">{{ message[5:] }}</div>
+            </div>
+            {% elif message.startswith('bot:') %}
+            <div class="chat-message bot">
+                <img class="avatar avatar-xs" src="{{ url_for('static', filename='img/chatBot.png') }}"
+                    alt="Bot Avatar">
+                <div class="message">{{ message[4:]|safe }}</div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        <div class="chat-footer">
+            <img class="avatar avatar-xs" src="{{ url_for('static', filename='img/administrator-male.png') }}"
+                alt="User Avatar">
+            <form method="POST" style="width: 100%; display: flex;" onsubmit="handleFormSubmit(event)">
+                <input type="text" name="prompt_input" placeholder="Ask a question..." required>
+                {% for message in chat_history %}
+                <input type="hidden" name="chat_history" value="{{ message }}">
+                {% endfor %}
+                <button type="submit">Submit</button>
+                <div class="loading-icon"></div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
