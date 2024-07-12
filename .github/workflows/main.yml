@@ -1,0 +1,41 @@
+name: Python application
+
+on:
+  [push]
+
+permissions:
+      id-token: write
+      contents: read
+
+env:
+  AZURE_WEBAPP_NAME: otl-chat-bot # set this to your application's name
+  AZURE_WEBAPP_PACKAGE_PATH: 'https://portal.azure.com/#@pspankajsakharkaroutlook.onmicrosoft.com/resource/subscriptions/d8e63c7e-e8b1-46f2-aaf0-02380d7ec723/resourceGroups/RG-otl/providers/Microsoft.Web/sites/otl-chat-bot/appServices' # set this to the path to your web app project, defaults to the repository root
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - uses: azure/login@v1
+      with:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
+
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.10
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Deploy web App using GH Action azure/webapps-deploy
+      uses: azure/webapps-deploy@v3
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+    - name: logout
+      run: |
+        az logout
