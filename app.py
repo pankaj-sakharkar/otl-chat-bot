@@ -21,7 +21,6 @@ OPENAI_API_KEY =  "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"
 
 
 
-
 # Initialize Pinecone and embeddings
 pc = Pinecone(api_key=PINECONE_API_KEY)
 embeddings = HuggingFaceBgeEmbeddings(model_name="all-MiniLM-l6-v2")
