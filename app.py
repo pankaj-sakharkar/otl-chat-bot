@@ -13,11 +13,8 @@ load_dotenv()
 app = Flask(__name__)
 
 # Set up API keys
-# PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
-# OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-PINECONE_API_KEY = "b28dc8f0-3cfa-482c-8897-ca9a84cca8ac"
-OPENAI_API_KEY =  "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"
-
+PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # Initialize Pinecone and embeddings
 pc = Pinecone(api_key=PINECONE_API_KEY)
